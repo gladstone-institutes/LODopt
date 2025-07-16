@@ -202,6 +202,7 @@ ineqfun_data <- function(pars, total_cells) {
 #' counts <- counts_res$counts
 #'
 #' pheno_data <- data.frame(sampleID = paste0("S", 1:30),groupid = c(rep("group0", 15), rep("group1", 15)))
+#' require(magrittr)
 #' pheno_data %<>% tibble::column_to_rownames("sampleID")
 #' require(SummarizedExperiment)
 #' model_formula <- "groupid"
