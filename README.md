@@ -1,4 +1,4 @@
-# LODppt
+# LODopt
 *Authors*: Reuben Thomas, Ayushi Agrawal, Natalie Elphick and Michela Traglia
 
 ## Background
