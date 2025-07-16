@@ -1,5 +1,5 @@
 # LODppt
-Authors: Reuben Thomas, Ayushi Agrawal, Natalie Elphick and Michela Traglia
+*Authors*: Reuben Thomas, Ayushi Agrawal, Natalie Elphick and Michela Traglia
 
 ## Background
 LODopt is a statistical method is estimate changes in the absolute cell composition of different cell-types in a tissue using counts of cells assigned to a given clusters/cell types per biological unit/sample. It is based on the optimal identification of sample-specific normalization factors to account for input tissue size differences followed by fitting a Generalized Linear Mixed Effects Model (GLMM) using the observed counts per sample per cluster. The range of scenarios over which the inferences derived from LODopt represent changes in (unobserved) absolute counts of different cell-types is much broader than those for other available approaches. Based on tests using simulated data, in comparison to exisiting approaches, LODOpt maintains the correct Type I error, has minimal bias in the estimated parameters of interest and comparable statistical power.
