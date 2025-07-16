@@ -187,6 +187,7 @@ ineqfun_data <- function(pars, total_cells) {
 #' @importFrom magrittr %<>%
 #' @importFrom dplyr mutate filter arrange slice all_of starts_with select across group_by summarise
 #' @importFrom lme4 glmer
+#' @importFrom SummarizedExperiment SummarizedExperiment
 logodds_optimized_normFactors <- function(cellcomp_se) {
 
   set.seed(cellcomp_se@metadata$random_seed)
@@ -304,14 +305,14 @@ logodds_optimized_normFactors <- function(cellcomp_se) {
       formula0 <- paste0("cbind(count+1, (round(total_cells*optim.norm.factor) - count)) ~ (1|sampleid)") %>% as.formula()
 
       glmerFit <- lme4::glmer(formula = formula1,
-                        data = counts_long_norm %>% filter(clusterid == clust) ,
+                        data = counts_long_norm %>% dplyr::filter(clusterid == clust) ,
                         family = "binomial")
 
       sglmerFit <- summary(glmerFit)
       estimates[temp_count] <- sglmerFit$coefficients[coef_of_interest,1]
 
       glmerFit0 <- lme4::glmer(formula = formula0,
-                         data = counts_long_norm %>% filter(clusterid == clust) ,
+                         data = counts_long_norm %>% dplyr::filter(clusterid == clust) ,
                          family = "binomial")
 
       anova_res <- anova(glmerFit, glmerFit0)

@@ -7,26 +7,18 @@
 logodds_optimized_normFactors(cellcomp_se)
 }
 \arguments{
-\item{cellcomp_se}{a SummarizedExperiment that includes
+\item{cellcomp_se}{a SummarizedExperiment object that includes
 \itemize{
 \item counts: an assay named counts with the number of cells from each sample in each of the clusters. The counts is a data frame with rownames set to the cluster names (without spaces or special characters) and column names representing the sample names
-\item variable information for the association analyses assigned to colData as a data frame with row names the same as the column names of the counts data frame
-\item Three parameters assigned to the metadata slot
+\item data for the association analyses assigned to colData as a data frame with row names the same as the column names of the counts data frame
+\item Five parameters assigned to the metadata slot
 \itemize{
-\item modelFormula representing the model to be tested using the variable in the colData and the other
+\item modelFormula representing the model to be tested using the variable in the colData
 \item coef_of_interest_index representing the index of the coefficient of interest to be tested in the model
 \item reference_levels_of_variables is a list of vectors.Each vector will have two elements - the name of a categorical variable (a column name in colData) and the reference level to set this variable to
 \item random_seed integer random seed
 \item unchanged_cluster_indices cluster indices of the clusters known not to change, set to NULL if not known
 }
-}}
-
-\item{cell_comp_args}{A list of 4 items
-\itemize{
- \item counts_long,
- \item grp,
- \item SampleID,
- \item cluster
 }}
 }
 \value{
