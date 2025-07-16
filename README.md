@@ -22,4 +22,4 @@ usethis::create_github_token()
 credentials::set_github_pat()
 ```
 ## Tutorial
-This tutorial[https://www.dropbox.com/scl/fi/pzsghgjacosk6qx6io5uo/intro.html?rlkey=ghfvi5jz74gs09zhn8nw8jyg6&dl=0] introduces how to use the LODopt R package.
+This [tutorial](https://www.dropbox.com/scl/fi/pzsghgjacosk6qx6io5uo/intro.html?rlkey=ghfvi5jz74gs09zhn8nw8jyg6&dl=1) introduces how to use the LODopt R package.
