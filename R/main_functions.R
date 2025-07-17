@@ -353,7 +353,7 @@ logodds_optimized_normFactors <- function(cellcomp_se) {
 
       cluster_significance[temp_count_cluster] <- anova_res$`Pr(>Chisq)`[2]
       estimates_significance[temp_count] <- sglmerFit$coefficients[coef_of_interest,4]
-      comparison[temp_count] <- row.names(sglmerFit$coefficients)[-1]
+      comparison[temp_count] <- row.names(sglmerFit$coefficients)[coef_of_interest]
       cluster_id[temp_count] <- rep(clust, 1)
       temp_count <- temp_count + 1
       temp_count_cluster <- temp_count_cluster + 1
