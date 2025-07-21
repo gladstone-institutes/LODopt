@@ -1,4 +1,6 @@
-![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg) [![GitHub issues](https://img.shields.io/github/issues/gladstone-institutes/LODopt)](https://github.com/gladstone-institutes/LODopt/issues)
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg) [![GitHub issues](https://img.shields.io/github/issues/gladstone-institutes/LODopt)](https://github.com/gladstone-institutes/LODopt/issues) ![R >= 4.4.0](https://img.shields.io/badge/R-4.4.0-blue) ![RStudio](https://img.shields.io/badge/RStudio-2024.12.0%2B467-blue)
+
+
 # LODopt
 *Authors*: Reuben Thomas, Ayushi Agrawal, Natalie Elphick and Michela Traglia
 
