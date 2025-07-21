@@ -1,3 +1,4 @@
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg) [![GitHub issues](https://img.shields.io/github/issues/gladstone-institutes/LODopt)](https://github.com/gladstone-institutes/LODopt/issues)
 # LODopt
 *Authors*: Reuben Thomas, Ayushi Agrawal, Natalie Elphick and Michela Traglia
 
