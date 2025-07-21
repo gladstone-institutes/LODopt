@@ -24,4 +24,4 @@ credentials::set_github_pat()
 ## Tutorial
 This [tutorial](https://www.dropbox.com/scl/fi/pzsghgjacosk6qx6io5uo/intro.html?rlkey=ghfvi5jz74gs09zhn8nw8jyg6&dl=1) introduces how to use the LODopt R package.
 
-<a href="https://www.dropbox.com/scl/fi/pzsghgjacosk6qx6io5uo/intro.html?rlkey=ghfvi5jz74gs09zhn8nw8jyg6&raw=1" target="_blank">This tutorial</a> introduces how to use the LODopt R package.
+<a href="https://www.dropbox.com/scl/fi/pzsghgjacosk6qx6io5uo/intro.html?rlkey=ghfvi5jz74gs09zhn8nw8jyg6&" target="_blank">This tutorial</a> introduces how to use the LODopt R package.
