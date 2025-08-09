@@ -1,5 +1,9 @@
 url: https://gladstone-institutes.github.io/LODopt/
 
+template:
+  bootstrap: 5
+  bootswatch: flatly
+
 reference:
   - title: "Function reference"
     desc: "Complete documentation for all functions in the LODopt package"
