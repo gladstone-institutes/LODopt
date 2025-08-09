@@ -33,6 +33,6 @@ Suggests:
     ggplot2,
     ggpubr
 VignetteBuilder: knitr
-URL: https://github.com/drreubenthomas/LODopt
-BugReports: https://github.com/drreubenthomas/LODopt/issues
+URL: https://github.com/gladstone-institutes/LODopt
+BugReports: https://github.com/gladstone-institutes/LODopt/issues
 Additional_repositories: https://bioconductor.org/packages/release/bioc

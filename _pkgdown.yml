@@ -1,0 +1,57 @@
+url: https://gladstone-institutes.github.io/LODopt/
+
+reference:
+  - title: "Function reference"
+    desc: "Complete documentation for all functions in the LODopt package"
+    contents:
+      - "logodds_optimized_normFactors"
+      - "simulate_cellCounts_fromTissue"
+      - "estimate_variance_w_args"
+      - "ineqfun_data"
+
+articles:
+  intro:
+    title: "Introduction to LODopt"
+    desc: "Learn how to use LODopt for cell type abundance analysis"
+    contents:
+      - "intro"
+
+navbar:
+  structure:
+    left: ["intro", "reference", "news"]
+    right: ["github"]
+  components:
+    news: ~
+    github:
+      href: https://github.com/gladstone-institutes/LODopt
+      icon: fa-github fa-lg
+      position: right
+
+home:
+  links:
+  - text: "Get started"
+    href: articles/intro.html
+  - text: "View on GitHub"
+    href: https://github.com/gladstone-institutes/LODopt
+
+authors:
+  "Reuben Thomas":
+    href: mailto:reuben.thomas@gladstone.ucsf.edu
+  "Ayushi Agrawal":
+    href: ~
+  "Natalie Elphick":
+    href: ~
+  "Michela Traglia":
+    href: ~
+
+footer:
+  structure:
+    left: ["links", "authors"]
+    right: ["dev"]
+  components:
+    links:
+      - text: "Browse source code"
+        href: https://github.com/gladstone-institutes/LODopt
+      - text: "Report a bug"
+        href: https://github.com/gladstone-institutes/LODopt/issues
+    dev: "Site built with pkgdown 2.1.0."
