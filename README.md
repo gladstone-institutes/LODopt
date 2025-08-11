@@ -10,11 +10,11 @@ LODopt is a statistical method to estimate changes in the absolute cell composit
 
 ## Installation   
 Currently the only way to install is by using the package`devtools`:    
-```
+```r
 devtools::install_github("gladstone-institutes/LODopt")
 ```
 If you get an error message and everything is spelled correctly, follow these steps before trying again:
-```
+```r
 #set config
 usethis::use_git_config(user.name = "YourName", user.email = "your@mail.com")
 

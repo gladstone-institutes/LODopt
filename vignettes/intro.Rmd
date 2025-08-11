@@ -14,16 +14,20 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
-library(LODopt)
-library(dplyr)
-library(magrittr)
-library(SummarizedExperiment)
 ```
 
 ## Introduction
 
 The `LODopt` package provides tools for analyzing associations between 
 cell type abundances and experimental conditions in single-cell RNA-seq data.
+
+First, let's load the necessary libraries:
+```{r load-libraries}
+library(LODopt)
+library(dplyr)
+library(magrittr)
+library(SummarizedExperiment)
+```
 
 ## Quick Start
 
