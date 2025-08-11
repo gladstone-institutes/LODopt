@@ -25,5 +25,5 @@ usethis::create_github_token()
 credentials::set_github_pat()
 ```
 ## Tutorial
-This [tutorial](https://gladstone-institutes.github.io/LODopt/intro.html) introduces how to use the LODopt R package.
+This [tutorial](https://gladstone-institutes.github.io/LODopt/articles/intro.html) introduces how to use the LODopt R package.
 

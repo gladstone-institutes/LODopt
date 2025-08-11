@@ -22,14 +22,21 @@ articles:
 
 navbar:
   structure:
-    left: ["intro", "reference", "news"]
-    right: ["github"]
+    left:  [intro, reference, news]
+    right: [github]
   components:
-    news: ~
+    intro:
+      text: Quick Start Guide
+      href: articles/intro.html
+    reference:
+      text: Reference
+      href: reference/index.html
+    news:
+      text: News
+      href: news/index.html
     github:
-      href: https://github.com/gladstone-institutes/LODopt
       icon: fa-github fa-lg
-      position: right
+      href: https://github.com/gladstone-institutes/LODopt
 
 home:
   links:
@@ -53,6 +60,5 @@ footer:
     left: [developed_by]
     right: [dev]
   components:
-    developed_by:
-      text: "Developed by Reuben Thomas, Ayushi Agrawal, Natalie Elphick and Michela Traglia."
+    developed_by: "Developed by Reuben Thomas, Ayushi Agrawal, Natalie Elphick and Michela Traglia."
     dev: "Site built with pkgdown 2.1.0."
