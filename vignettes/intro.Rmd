@@ -22,7 +22,7 @@ The `LODopt` package provides tools for analyzing associations between
 cell type abundances and experimental conditions in single-cell RNA-seq data.
 
 First, let's load the necessary libraries:
-```{r load-libraries}
+```{r load-libraries, message=FALSE, warning=FALSE}
 library(LODopt)
 library(dplyr)
 library(magrittr)
