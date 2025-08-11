@@ -15,7 +15,7 @@ reference:
 
 articles:
   intro:
-    title: "Introduction to LODopt"
+    title: "Quick Start Guide"
     desc: "Learn how to use LODopt for cell type abundance analysis"
     contents:
       - "intro"
@@ -50,12 +50,9 @@ authors:
 
 footer:
   structure:
-    left: ["links", "authors"]
-    right: ["dev"]
+    left: [developed_by]
+    right: [dev]
   components:
-    links:
-      - text: "Browse source code"
-        href: https://github.com/gladstone-institutes/LODopt
-      - text: "Report a bug"
-        href: https://github.com/gladstone-institutes/LODopt/issues
+    developed_by:
+      text: "Developed by Reuben Thomas, Ayushi Agrawal, Natalie Elphick and Michela Traglia."
     dev: "Site built with pkgdown 2.1.0."
