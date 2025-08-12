@@ -1,7 +1,7 @@
 Package: LODopt
 Type: Package
 Title: Cell Type Abundance Association Analysis for Single Cell Data
-Version: 0.1.0
+Version: 1.0.0
 Authors@R: c(
     person("Reuben", "Thomas", email = "reuben.thomas@gladstone.ucsf.edu", role = c("aut", "cre")),
     person("Ayushi", "Agrawal", role = "aut"),

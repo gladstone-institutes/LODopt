@@ -42,8 +42,6 @@ home:
   links:
   - text: "Get started"
     href: articles/intro.html
-  - text: "View on GitHub"
-    href: https://github.com/gladstone-institutes/LODopt
 
 authors:
   "Reuben Thomas":
