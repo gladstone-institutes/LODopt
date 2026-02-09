@@ -1,41 +1,40 @@
 Package: LODopt
 Type: Package
 Title: Cell Type Abundance Association Analysis for Single Cell Data
-Version: 1.0.0
+Version: 1.1.0
 Authors@R: c(
     person("Reuben", "Thomas", email = "reuben.thomas@gladstone.ucsf.edu", role = c("aut", "cre")),
     person("Ayushi", "Agrawal", role = "aut"),
-    person("Natalie", "Elphick", role = "aut"),
+    person("Natalie", "Gill", role = "aut"),
     person("Michela", "Traglia", role = "aut")
   )
-Description: Performs association analysis between cell type counts and 
+Description: Performs association analysis between cell type counts and
     experimental conditions or phenotypes. Takes count matrices of cell types
     across samples and tests for associations with experimental design factors.
-License: GPL-2
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.3.2
 Imports:
     stats,
     dirmult,
-    utils,
-    MASS,
     dplyr,
     magrittr,
     tidyr,
     tibble,
     lme4,
     SummarizedExperiment,
-    edgeR,
     Rsolnp,
     matrixStats
 Suggests:
     testthat (>= 3.0.0),
     knitr,
     rmarkdown,
-    dirmult,
     ggplot2,
-    ggpubr
+    ggpubr,
+    Seurat,
+    SeuratObject
+Config/testthat/edition: 3
 VignetteBuilder: knitr
 URL: https://github.com/gladstone-institutes/LODopt
 BugReports: https://github.com/gladstone-institutes/LODopt/issues
