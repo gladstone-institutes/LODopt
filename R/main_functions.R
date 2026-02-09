@@ -70,12 +70,12 @@ simulate_cellCounts_fromTissue <- function(props,
 
   theoretical_log_odds_ratios = log(change_mean*(1-props)/(1 - (change_mean*props)))
   observed_log_odds_ratios <- rowMeans(logodds.numcells.tissue[,((nsamp/2) + 1):nsamp]) -
-    rowMeans(logodds.numcells.tissue[,1:nsamp/2])
+    rowMeans(logodds.numcells.tissue[,1:(nsamp/2)])
 
 
   theoretical_log_absolute_abundance_ratios <- log(change_mean)
   observed_log_absolute_abundance_ratios <- rowMeans(log.abundance.numcells.tissue[,((nsamp/2) + 1):nsamp]) -
-    rowMeans(log.abundance.numcells.tissue[,1:nsamp/2])
+    rowMeans(log.abundance.numcells.tissue[,1:(nsamp/2)])
 
   ###sampling fraction
   sampling_fraction <- 1/(1e5*runif(nsamp, min = 0.5, max = 1.5))
