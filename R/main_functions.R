@@ -254,10 +254,18 @@ logodds_optimized_normFactors <- function(cellcomp_se, verbose = TRUE) {
   model_formula <- cellcomp_se@metadata$modelFormula
   coef_of_interest <- cellcomp_se@metadata$coef_of_interest_index
 
-  if(is.null(cellcomp_se@metadata$unchanged_cluster_indices))
+  unchanged <- cellcomp_se@metadata$unchanged_cluster_indices
+  if (is.null(unchanged)) {
     optim_clusters <- 1:length(clusters)
-  else
-    optim_clusters <- cellcomp_se@metadata$unchanged_cluster_indices
+  } else if (is.character(unchanged)) {
+    matched <- match(unchanged, clusters)
+    if (any(is.na(matched)))
+      stop("unchanged_cluster_indices names not found: ",
+           paste(unchanged[is.na(matched)], collapse = ", "))
+    optim_clusters <- matched
+  } else {
+    optim_clusters <- unchanged
+  }
 
   nsamp <- ncol(cellcomp_se)
 
@@ -367,6 +375,18 @@ logodds_optimized_normFactors <- function(cellcomp_se, verbose = TRUE) {
                         family = "binomial")
 
       sglmerFit <- summary(glmerFit)
+
+      # Resolve character coef_of_interest to integer index on first cluster
+      if (is.character(coef_of_interest)) {
+        coef_names <- row.names(sglmerFit$coefficients)
+        coef_idx <- match(coef_of_interest, coef_names)
+        if (is.na(coef_idx))
+          stop("coef_of_interest_index name '", coef_of_interest,
+               "' not found in model coefficients: ",
+               paste(coef_names, collapse = ", "))
+        coef_of_interest <- coef_idx
+      }
+
       estimates[temp_count] <- sglmerFit$coefficients[coef_of_interest,1]
 
       glmerFit0 <- lme4::glmer(formula = formula0,
