@@ -1,0 +1,25 @@
+#' Mock single-cell data for Seurat workflow examples
+#'
+#' A small simulated dataset representing post-analysis scRNA-seq data, suitable
+#' for demonstrating the \code{\link{prepare_from_seurat}} workflow. Generated
+#' using \code{\link{simulate_cellCounts_fromTissue}} with 6 cell types, 12
+#' samples (6 control, 6 treated), and ~1500 cells total. Two cell types
+#' (B_cells and Monocytes) have differential abundance between groups.
+#'
+#' @format A list with two elements:
+#' \describe{
+#'   \item{counts_matrix}{A sparse gene-by-cell matrix (50 genes x ~1500 cells)
+#'     of class \code{dgCMatrix}, suitable for \code{SeuratObject::CreateSeuratObject()}.}
+#'   \item{cell_metadata}{A data frame with one row per cell and three columns:
+#'     \describe{
+#'       \item{cell_type}{Character. Cell type label (one of B_cells, T_cells_CD4,
+#'         T_cells_CD8, Monocytes, NK_cells, Dendritic_cells).}
+#'       \item{sample_id}{Character. Sample identifier (sample_1 through sample_12).}
+#'       \item{group}{Character. Experimental group ("control" or "treated").}
+#'     }
+#'     Row names are cell barcodes (cell_1, cell_2, ...).
+#'   }
+#' }
+#'
+#' @source Simulated using \code{data-raw/mock_seurat_data.R}.
+"mock_seurat_data"
