@@ -328,32 +328,44 @@ logodds_optimized_normFactors <- function(cellcomp_se, verbose = TRUE) {
 
 
 
-    initial_guess <- runif(nsamp, min = 0.7, max = 1.4)
-    infeasible_solution <- TRUE
-    while(infeasible_solution) {
-      #print(infeasible_solution)
-      norm_pars <- initial_guess/exp(mean(log(initial_guess)))
-      if(sum((norm_pars*counts_long_norm$total_cells - counts_long_norm$count) < 0) > 0) {
-        #print("New initial guess")
-        initial_guess <- runif(nsamp, min = 0.7, max = 1.4)
-      }else{
-        infeasible_solution <- FALSE
+    max_optim_retries <- 5
+    optim_converged <- FALSE
+    for (retry in seq_len(max_optim_retries)) {
+      initial_guess <- runif(nsamp, min = 0.7, max = 1.4)
+      infeasible_solution <- TRUE
+      feasibility_iter <- 0
+      while(infeasible_solution) {
+        feasibility_iter <- feasibility_iter + 1
+        if (feasibility_iter > 1000)
+          stop("Could not find a feasible initial guess after 1000 attempts")
+        norm_pars <- initial_guess/exp(mean(log(initial_guess)))
+        if(sum((norm_pars*counts_long_norm$total_cells - counts_long_norm$count) < 0) > 0) {
+          initial_guess <- runif(nsamp, min = 0.7, max = 1.4)
+        }else{
+          infeasible_solution <- FALSE
+        }
       }
+
+      temp_res <- Rsolnp::solnp(pars = initial_guess,
+                                estimate_variance,
+                                LB = rep(0.1, nsamp),
+                                UB = rep(50, nsamp),
+                                ineqfun = ineqfun,
+                                ineqLB = matrixStats::colMaxs(counts %>% as.matrix(.)),
+                                ineqUB = rep(2*max(Total_Cells), nsamp),
+                                control = list(tol = 1e-12,delta = 1e-9, trace = 0),
+      )
+
+      if (temp_res$convergence == 0) {
+        optim_converged <- TRUE
+        break
+      }
+      if (verbose) message("Optimization did not converge, retrying (", retry, "/", max_optim_retries, ")")
     }
-    #print(infeasible_solution)
-    temp_res <- Rsolnp::solnp(pars = initial_guess,
-                              estimate_variance,
-                              LB = rep(0.1, nsamp),
-                              UB = rep(50, nsamp),
-                              ineqfun = ineqfun,
-                              ineqLB = matrixStats::colMaxs(counts %>% as.matrix(.)),
-                              ineqUB = rep(2*max(Total_Cells), nsamp),
-                              control = list(tol = 1e-12,delta = 1e-9, trace = 0),
-    )
+    if (!optim_converged)
+      warning("Optimization did not converge after ", max_optim_retries, " attempts")
 
     optim.pars <- temp_res$pars/exp(mean(log(temp_res$pars)))
-    if(temp_res$convergence != 0)
-      warning("Rsolnp optimization did not converge")
 
     optim_factor <- data.frame(colnames(counts),
                                optim.norm.factor = optim.pars)
