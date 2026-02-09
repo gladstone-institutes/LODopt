@@ -112,18 +112,21 @@ simulate_cellCounts_fromTissue <- function(props,
 #' @param counts A cell count matrix with number of columns representing the number of samples and number of rows representing the number of cell-types or clusters
 #' @param total_cells An integer vector representing the total number of cells per sample
 #' @param optim_clusters An integer vector representing the indices of the clusters over which the total variance is to be calculated
+#' @param centering_matrix Optional precomputed centering matrix (nsamp x nsamp). If NULL, computed internally.
 #'
 #' @return A numeric value representing the sum of variances of log odds of cluster membership across all clusters specified in optim_clusters
 #'
 #' @examples
 #' @export
 #'
-estimate_variance_w_args <- function(pars, counts, total_cells, optim_clusters) {
+estimate_variance_w_args <- function(pars, counts, total_cells, optim_clusters, centering_matrix = NULL) {
 
   total_var.norm <- vector(mode = "numeric")
   nsamp <- ncol(counts)
   nclust <- nrow(counts)
   log_odds <- matrix(NA, nclust, nsamp)
+  if (is.null(centering_matrix))
+    centering_matrix <- diag(nsamp) - (1/nsamp) * rep(1, nsamp) %*% t(rep(1, nsamp))
   pars <- pars/exp(mean(log(pars)))
   for(s in 1:ncol(counts)) {
     if(sum(pars[s]*total_cells[s] - counts[,s] < 0) > 0) {
@@ -132,7 +135,7 @@ estimate_variance_w_args <- function(pars, counts, total_cells, optim_clusters) 
     log_odds[,s] <- log((counts[,s]+1)/(pars[s]*total_cells[s] - counts[,s]))
   }
   for(c in optim_clusters) {
-    temp_var_estimate <- (1/(nsamp - 1))*t(log_odds[c,])%*%(diag(nsamp) - (1/nsamp)*(rep(1, nsamp))%*%t(rep(1, nsamp)))%*%((log_odds[c,]))
+    temp_var_estimate <- (1/(nsamp - 1))*t(log_odds[c,])%*%centering_matrix%*%((log_odds[c,]))
     total_var.norm[c] <- temp_var_estimate[1,1]
   }
   return(sum(total_var.norm[optim_clusters]))
@@ -296,6 +299,8 @@ logodds_optimized_normFactors <- function(cellcomp_se, verbose = TRUE) {
 
   counts %<>% tibble::column_to_rownames("clusterid")
 
+  # Precompute centering matrix for variance estimation
+  centering_matrix <- diag(nsamp) - (1/nsamp) * rep(1, nsamp) %*% t(rep(1, nsamp))
 
   ineqfun <- function(pars) {
     ineqres <- ineqfun_data(pars, Total_Cells)
@@ -323,7 +328,7 @@ logodds_optimized_normFactors <- function(cellcomp_se, verbose = TRUE) {
 
 
     estimate_variance <- function(pars) {
-      estimate_variance_w_args(pars, counts, Total_Cells, optim_clusters)
+      estimate_variance_w_args(pars, counts, Total_Cells, optim_clusters, centering_matrix)
     }
 
 
