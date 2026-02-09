@@ -179,7 +179,7 @@ ineqfun_data <- function(pars, total_cells) {
 #' @return A list with two elements
 #' \itemize{
 #' \item results: data frame of results of differential analyses with 4 columns - cluster_id, comparison, estimates (log odds ratio) and estimate_significance (pvalue)
-#' \item optim_factors: a numeric vector with the optimal normalization factors for each sample in the data
+#' \item optim_factor: a data frame with columns sampleid and optim.norm.factor
 #' }
 #'
 #' @examples
@@ -214,7 +214,7 @@ ineqfun_data <- function(pars, total_cells) {
 #'                                                    random_seed = 123456,
 #'                                                    unchanged_cluster_indices = NULL))
 #' cellcomp_res <- logodds_optimized_normFactors(cellcomp_se)
-#' print(cellcomp_res$res)
+#' print(cellcomp_res$results)
 #'
 #'
 #' @export
