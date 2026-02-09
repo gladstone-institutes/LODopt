@@ -221,8 +221,32 @@ ineqfun_data <- function(pars, total_cells) {
 #' @importFrom magrittr %<>%
 #' @importFrom dplyr mutate filter arrange slice all_of starts_with select across group_by summarise
 #' @importFrom lme4 glmer
-#' @importFrom SummarizedExperiment SummarizedExperiment
+#' @importFrom SummarizedExperiment SummarizedExperiment assayNames colData assays
 logodds_optimized_normFactors <- function(cellcomp_se, verbose = TRUE) {
+
+  # Validate input type
+  if (!inherits(cellcomp_se, "SummarizedExperiment"))
+    stop("cellcomp_se must be a SummarizedExperiment object")
+
+  # Validate counts assay exists
+  if (!"counts" %in% assayNames(cellcomp_se))
+    stop("cellcomp_se must contain an assay named 'counts'")
+
+  # Validate required metadata fields
+  required_fields <- c("modelFormula", "coef_of_interest_index",
+                       "reference_levels_of_variables", "random_seed",
+                       "unchanged_cluster_indices")
+  missing <- setdiff(required_fields, names(cellcomp_se@metadata))
+  if (length(missing) > 0)
+    stop("Missing required metadata fields: ", paste(missing, collapse = ", "))
+
+  # Validate colData rownames match count column names
+  if (!setequal(rownames(colData(cellcomp_se)), colnames(cellcomp_se)))
+    stop("colData rownames must match count matrix column names")
+
+  # Validate counts are non-negative
+  if (any(assays(cellcomp_se)$counts < 0))
+    stop("Count matrix must contain non-negative values")
 
   set.seed(cellcomp_se@metadata$random_seed)
 
