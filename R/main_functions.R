@@ -382,34 +382,43 @@ logodds_optimized_normFactors <- function(cellcomp_se, verbose = TRUE) {
       formula1 <- paste0("cbind(count+1, (round(total_cells*optim.norm.factor) - count)) ~ (1|sampleid) + ", model_formula) %>% as.formula()
       formula0 <- paste0("cbind(count+1, (round(total_cells*optim.norm.factor) - count)) ~ (1|sampleid)") %>% as.formula()
 
-      glmerFit <- lme4::glmer(formula = formula1,
-                        data = counts_long_norm %>% dplyr::filter(clusterid == clust) ,
-                        family = "binomial")
+      tryCatch({
+        glmerFit <- lme4::glmer(formula = formula1,
+                          data = counts_long_norm %>% dplyr::filter(clusterid == clust) ,
+                          family = "binomial")
 
-      sglmerFit <- summary(glmerFit)
+        sglmerFit <- summary(glmerFit)
 
-      # Resolve character coef_of_interest to integer index on first cluster
-      if (is.character(coef_of_interest)) {
-        coef_names <- row.names(sglmerFit$coefficients)
-        coef_idx <- match(coef_of_interest, coef_names)
-        if (is.na(coef_idx))
-          stop("coef_of_interest_index name '", coef_of_interest,
-               "' not found in model coefficients: ",
-               paste(coef_names, collapse = ", "))
-        coef_of_interest <- coef_idx
-      }
+        # Resolve character coef_of_interest to integer index on first cluster
+        if (is.character(coef_of_interest)) {
+          coef_names <- row.names(sglmerFit$coefficients)
+          coef_idx <- match(coef_of_interest, coef_names)
+          if (is.na(coef_idx))
+            stop("coef_of_interest_index name '", coef_of_interest,
+                 "' not found in model coefficients: ",
+                 paste(coef_names, collapse = ", "))
+          coef_of_interest <- coef_idx
+        }
 
-      estimates[temp_count] <- sglmerFit$coefficients[coef_of_interest,1]
+        estimates[temp_count] <- sglmerFit$coefficients[coef_of_interest,1]
 
-      glmerFit0 <- lme4::glmer(formula = formula0,
-                         data = counts_long_norm %>% dplyr::filter(clusterid == clust) ,
-                         family = "binomial")
+        glmerFit0 <- lme4::glmer(formula = formula0,
+                           data = counts_long_norm %>% dplyr::filter(clusterid == clust) ,
+                           family = "binomial")
 
-      anova_res <- anova(glmerFit, glmerFit0)
+        anova_res <- anova(glmerFit, glmerFit0)
 
-      cluster_significance[temp_count_cluster] <- anova_res$`Pr(>Chisq)`[2]
-      estimates_significance[temp_count] <- sglmerFit$coefficients[coef_of_interest,4]
-      comparison[temp_count] <- row.names(sglmerFit$coefficients)[coef_of_interest]
+        cluster_significance[temp_count_cluster] <- anova_res$`Pr(>Chisq)`[2]
+        estimates_significance[temp_count] <- sglmerFit$coefficients[coef_of_interest,4]
+        comparison[temp_count] <- row.names(sglmerFit$coefficients)[coef_of_interest]
+      }, error = function(e) {
+        if (verbose) message("  GLMM failed for cluster ", clust, ": ", e$message)
+        estimates[temp_count] <<- NA
+        estimates_significance[temp_count] <<- NA
+        comparison[temp_count] <<- NA
+        cluster_significance[temp_count_cluster] <<- NA
+      })
+
       cluster_id[temp_count] <- rep(clust, 1)
       temp_count <- temp_count + 1
       temp_count_cluster <- temp_count_cluster + 1
