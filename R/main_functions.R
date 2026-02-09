@@ -127,8 +127,7 @@ estimate_variance_w_args <- function(pars, counts, total_cells, optim_clusters) 
   pars <- pars/exp(mean(log(pars)))
   for(s in 1:ncol(counts)) {
     if(sum(pars[s]*total_cells[s] - counts[,s] < 0) > 0) {
-      print("non-feasible solution")
-      print((pars[s]*total_cells[s] - counts[,s]))
+      warning("non-feasible solution for sample ", s)
     }
     log_odds[,s] <- log((counts[,s]+1)/(pars[s]*total_cells[s] - counts[,s]))
   }
@@ -176,6 +175,7 @@ ineqfun_data <- function(pars, total_cells) {
 #' \item unchanged_cluster_indices cluster indices of the clusters known not to change, set to NULL if not known
 #' }
 #' }
+#' @param verbose Logical; if TRUE (default), prints progress messages
 #' @return A list with two elements
 #' \itemize{
 #' \item results: data frame of results of differential analyses with 4 columns - cluster_id, comparison, estimates (log odds ratio) and estimate_significance (pvalue)
@@ -222,7 +222,7 @@ ineqfun_data <- function(pars, total_cells) {
 #' @importFrom dplyr mutate filter arrange slice all_of starts_with select across group_by summarise
 #' @importFrom lme4 glmer
 #' @importFrom SummarizedExperiment SummarizedExperiment
-logodds_optimized_normFactors <- function(cellcomp_se) {
+logodds_optimized_normFactors <- function(cellcomp_se, verbose = TRUE) {
 
   set.seed(cellcomp_se@metadata$random_seed)
 
@@ -279,7 +279,7 @@ logodds_optimized_normFactors <- function(cellcomp_se) {
   count_iter <- 1
 
   while(!found_stable_solution & count_iter < 10) {
-    print(paste0("Running iteration no. ", count_iter))
+    if (verbose) message("Running iteration no. ", count_iter)
     count_iter <- count_iter + 1
 
 
@@ -321,7 +321,7 @@ logodds_optimized_normFactors <- function(cellcomp_se) {
 
     optim.pars <- temp_res$pars/exp(mean(log(temp_res$pars)))
     if(temp_res$convergence != 0)
-      print(paste0("Warning: Rsolnp optimization did not converge"))
+      warning("Rsolnp optimization did not converge")
 
     optim_factor <- data.frame(colnames(counts),
                                optim.norm.factor = optim.pars)
@@ -370,7 +370,7 @@ logodds_optimized_normFactors <- function(cellcomp_se) {
 
     if(identical(old_outlier_clusters, outlier_clusters) | !is.null(cellcomp_se@metadata$unchanged_cluster_indices)) {
       found_stable_solution <- TRUE
-      print("Found stable solution")
+      if (verbose) message("Found stable solution")
     }else{
       old_outlier_clusters <- outlier_clusters
       optim_clusters <- setdiff(1:nrow(counts), outlier_clusters)
