@@ -41,8 +41,23 @@ usethis::create_github_token()
 credentials::set_github_pat()
 ```
 
-## Tutorial
+## Tutorials
 
-This
-[tutorial](https://gladstone-institutes.github.io/LODopt/articles/intro.html)
-introduces how to use the LODopt R package.
+- [Quick Start
+  Guide](https://gladstone-institutes.github.io/LODopt/articles/intro.html)
+  — introduction to using LODopt with a SummarizedExperiment
+- [Seurat
+  Workflow](https://gladstone-institutes.github.io/LODopt/articles/seurat-workflow.html)
+  — converting a Seurat object and running differential abundance
+  analysis
+
+## AI Disclosure Statement
+
+Generative AI tools (Claude Code, Anthropic) were used as coding
+assistants during the development of this package. The authors maintain
+full responsibility for the accuracy, reproducibility, and scientific
+validity of all code. AI-assisted outputs were reviewed and validated
+against expected behavior before integration. The research questions,
+analytical approaches, parameter selections, and scientific
+interpretations were determined independently by the authors without AI
+input.

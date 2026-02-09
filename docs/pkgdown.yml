@@ -4,7 +4,7 @@ pkgdown_sha: ~
 articles:
   intro: intro.html
   seurat-workflow: seurat-workflow.html
-last_built: 2026-02-09T22:15Z
+last_built: 2026-02-09T22:21Z
 urls:
   reference: https://gladstone-institutes.github.io/LODopt/reference
   article: https://gladstone-institutes.github.io/LODopt/articles
