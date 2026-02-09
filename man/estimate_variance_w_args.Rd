@@ -4,7 +4,13 @@
 \alias{estimate_variance_w_args}
 \title{estimate_variance_w_args}
 \usage{
-estimate_variance_w_args(pars, counts, total_cells, optim_clusters)
+estimate_variance_w_args(
+  pars,
+  counts,
+  total_cells,
+  optim_clusters,
+  centering_matrix = NULL
+)
 }
 \arguments{
 \item{pars}{A numeric vector of length equal to no. of samples, representing their corresponding normalization factors}
@@ -14,6 +20,8 @@ estimate_variance_w_args(pars, counts, total_cells, optim_clusters)
 \item{total_cells}{An integer vector representing the total number of cells per sample}
 
 \item{optim_clusters}{An integer vector representing the indices of the clusters over which the total variance is to be calculated}
+
+\item{centering_matrix}{Optional precomputed centering matrix (nsamp x nsamp). If NULL, computed internally.}
 }
 \value{
 A numeric value representing the sum of variances of log odds of cluster membership across all clusters specified in optim_clusters

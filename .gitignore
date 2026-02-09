@@ -2,3 +2,10 @@
 .Rhistory
 .RData
 .Ruserdata
+
+# MacOS files
+.DS_Store
+
+# Claude files
+CLAUDE.md
+.claude/

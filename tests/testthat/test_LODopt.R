@@ -76,9 +76,11 @@ test_that("logodds_optimized_normFactors works with basic input", {
   expect_type(results, "list")
   expect_s3_class(results$results, "data.frame")
   expect_equal(nrow(results$results), nrow(cellcomp_se))
-  expect_true(all(c("cluster_id", "comparison", "estimates",
-                     "estimates_significance", "adjusted_pvalue") %in%
-                    colnames(results$results)))
+  expect_true(all(c(
+    "cluster_id", "comparison", "estimates",
+    "estimates_significance", "adjusted_pvalue"
+  ) %in%
+    colnames(results$results)))
   # adjusted p-values >= raw p-values
   non_na <- !is.na(results$results$estimates_significance)
   expect_true(all(
@@ -208,7 +210,8 @@ test_that("prepare_from_seurat works with mock Seurat object", {
 
   # Create a minimal count matrix
   counts_mat <- matrix(
-    rpois(10 * n_cells, lambda = 5), nrow = 10, ncol = n_cells,
+    rpois(10 * n_cells, lambda = 5),
+    nrow = 10, ncol = n_cells,
     dimnames = list(paste0("Gene", 1:10), rownames(meta))
   )
 
@@ -227,8 +230,8 @@ test_that("prepare_from_seurat works with mock Seurat object", {
 
   expect_s4_class(se, "SummarizedExperiment")
   expect_true("counts" %in% SummarizedExperiment::assayNames(se))
-  expect_equal(ncol(se), 6)  # 6 samples
-  expect_equal(nrow(se), 3)  # 3 cell types
+  expect_equal(ncol(se), 6) # 6 samples
+  expect_equal(nrow(se), 3) # 3 cell types
   expect_equal(se@metadata$modelFormula, "group")
 })
 

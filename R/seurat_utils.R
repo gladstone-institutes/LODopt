@@ -22,15 +22,16 @@ prepare_from_seurat <- function(seurat_obj, cluster_col, sample_col, pheno_cols,
                                 reference_levels = NULL, random_seed = 42,
                                 unchanged_clusters = NULL,
                                 sanitize_names = TRUE) {
-  if (!requireNamespace("SeuratObject", quietly = TRUE))
+  if (!requireNamespace("SeuratObject", quietly = TRUE)) {
     stop("SeuratObject package required. Install with: install.packages('SeuratObject')")
+  }
 
   # Extract metadata
   meta <- seurat_obj@meta.data
 
   # Cross-tabulate: samples (rows) x clusters (cols)
   count_table <- table(meta[[sample_col]], meta[[cluster_col]])
-  counts <- t(as.data.frame.matrix(count_table))  # clusters x samples
+  counts <- t(as.data.frame.matrix(count_table)) # clusters x samples
 
   # Sanitize cluster names
   if (sanitize_names) {
@@ -42,6 +43,7 @@ prepare_from_seurat <- function(seurat_obj, cluster_col, sample_col, pheno_cols,
   pheno_data <- pheno_data[!duplicated(pheno_data[[sample_col]]), , drop = FALSE]
   rownames(pheno_data) <- pheno_data[[sample_col]]
   pheno_data[[sample_col]] <- NULL
+  pheno_data <- pheno_data[colnames(counts), , drop = FALSE]
 
   # Build reference_levels_of_variables in LODopt format
   ref_levels <- NULL

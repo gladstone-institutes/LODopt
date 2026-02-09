@@ -35,46 +35,54 @@ library(SummarizedExperiment)
 We simulate data for 30 samples with 25 clusters, where 4 clusters (c0, c2, c7 and c14) have changed their abundance. 
 ```{r simulate-counts}
 # Create example count matrix
-  # Create test data
-  set.seed(123)
-   # No of clusters in single cell dataset
-   K=25
-   # No of cells in tissue
-   depth = 1e9
-   # Total number of samples
-   nsamp = 30
-   alpha = 10^runif(K, min=log10(0.5), max = log10(10))
-   p <- dirmult::rdirichlet(alpha = alpha) |> sort()
-   p <- p[p > 0.001]
-   p <- p/sum(p)
-   size <- rep(10, length(p))
-   change_mean = rep(1, length(p))
-   ##changed cluster indices
-   change_mean[c(1,3,8,15)] = c(0.2, 2, 0.2, 2)
-   # Simulate counts
-   counts_res <- simulate_cellCounts_fromTissue(props=p,nsamp=nsamp,depth=depth, size = size, change_mean = change_mean)
+# Create test data
+set.seed(123)
+# No of clusters in single cell dataset
+K <- 25
+# No of cells in tissue
+depth <- 1e9
+# Total number of samples
+nsamp <- 30
+alpha <- 10^runif(K, min = log10(0.5), max = log10(10))
+p <- dirmult::rdirichlet(alpha = alpha) |> sort()
+p <- p[p > 0.001]
+p <- p / sum(p)
+size <- rep(10, length(p))
+change_mean <- rep(1, length(p))
+## changed cluster indices
+change_mean[c(1, 3, 8, 15)] <- c(0.2, 2, 0.2, 2)
+# Simulate counts
+counts_res <- simulate_cellCounts_fromTissue(
+  props = p,
+  nsamp = nsamp,
+  depth = depth,
+  size = size,
+  change_mean = change_mean
+)
 ```
 
 ### Set up the required SummarizedExperiment object
 ```{r}
-  counts <- counts_res$counts
+counts <- counts_res$counts
 
-  pheno_data <- data.frame(sampleID = paste0("S", 1:30),
-                           groupid = c(rep("group0", 15), rep("group1", 15)))
-  pheno_data %<>% tibble::column_to_rownames("sampleID")
+pheno_data <- data.frame(
+  sampleID = paste0("S", 1:30),
+  groupid = c(rep("group0", 15), rep("group1", 15))
+) %>%
+  tibble::column_to_rownames("sampleID")
 
-
-
-  require(SummarizedExperiment)
-  model_formula <- "groupid"
-  cellcomp_se <- SummarizedExperiment(assays = list(counts=counts),
-                                      colData = pheno_data,
-                                      metadata = list(modelFormula = model_formula,
-                                                      coef_of_interest_index = 2,
-                                                      reference_levels_of_variables = list(c("groupid", "group0")),
-                                                      random_seed = 123456,
-                                                      unchanged_cluster_indices = NULL))
-
+model_formula <- "groupid"
+cellcomp_se <- SummarizedExperiment(
+  assays = list(counts = counts),
+  colData = pheno_data,
+  metadata = list(
+    modelFormula = model_formula,
+    coef_of_interest_index = 2,
+    reference_levels_of_variables = list(c("groupid", "group0")),
+    random_seed = 123456,
+    unchanged_cluster_indices = NULL
+  )
+)
 ```
 ### Running Association Analysis
 ```{r}
@@ -84,7 +92,7 @@ cellcomp_res <- logodds_optimized_normFactors(cellcomp_se)
 ### Summarizing Results
 The estimate column has the log odds ratio estimates for the cluster-specific association with groupid while the estimates_significance has the corresponding raw p-values for the corresponding null hypothesis that the log odds ratio is equal to 0.
 ```{r}
-print(cellcomp_res$res)
+print(cellcomp_res$results)
 ```
 
 

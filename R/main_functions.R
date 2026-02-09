@@ -23,81 +23,80 @@
 #' # Create example data
 #' set.seed(123)
 #' # No of clusters in single cell dataset
-#' K=25
-#' nsamp = 30
-#' alpha = 10^runif(K, min=log10(0.5), max = log10(10))
+#' K <- 25
+#' nsamp <- 30
+#' alpha <- 10^runif(K, min = log10(0.5), max = log10(10))
 #' p <- dirmult::rdirichlet(alpha = alpha) |> sort()
 #' p <- p[p > 0.001]
-#' p <- p/sum(p)
+#' p <- p / sum(p)
 #' size <- rep(10, length(p))
-#' change_mean = rep(1, length(p))
-#' change_mean[c(1,3,8,15)] = c(0.2, 2, 0.2, 2)
-#' depth = 1e9
+#' change_mean <- rep(1, length(p))
+#' change_mean[c(1, 3, 8, 15)] <- c(0.2, 2, 0.2, 2)
+#' depth <- 1e9
 #' # Simulate counts
-#' counts_res <- simulate_cellCounts_fromTissue(props=p,nsamp=nsamp,depth=depth, size = size, change_mean = change_mean)
-#' print(counts_res$counts[1:3,1:3])
+#' counts_res <- simulate_cellCounts_fromTissue(props = p, nsamp = nsamp, depth = depth, size = size, change_mean = change_mean)
+#' print(counts_res$counts[1:3, 1:3])
 #'
-#' @import stats
+#' @importFrom stats rnbinom rmultinom runif as.formula relevel anova p.adjust
 #' @importFrom dirmult rdirichlet
 #' @export
 #'
 simulate_cellCounts_fromTissue <- function(props,
-                                         nsamp,
-                                         size=NULL,
-                                         depth = 1e9,
-                                         change_mean){
-
-  numcells.tissue <- matrix(NA, length(props),nsamp)
+                                           nsamp,
+                                           size = NULL,
+                                           depth = 1e9,
+                                           change_mean) {
+  numcells.tissue <- matrix(NA, length(props), nsamp)
   # Generate total cell counts for each cluster
-  for(c in 1:length(props)) {
-    mu0 = round(depth*props[c])
-    mu1 = round((change_mean[c])*depth*props[c])
-    for(s in 1:(nsamp/2)) {
-      #mu <- rnorm(1, mean = mu0, sd = 0.2*mu0)
-      numcells.tissue[c,s] <- rnbinom(1,size=size[c],mu=mu0)
+  for (c in 1:length(props)) {
+    mu0 <- round(depth * props[c])
+    mu1 <- round((change_mean[c]) * depth * props[c])
+    for (s in 1:(nsamp / 2)) {
+      # mu <- rnorm(1, mean = mu0, sd = 0.2*mu0)
+      numcells.tissue[c, s] <- rnbinom(1, size = size[c], mu = mu0)
     }
-    for(s in ((nsamp/2) + 1):nsamp) {
-      #mu <- rnorm(1, mean = mu1, sd = 0.2*mu1)
-      numcells.tissue[c,s] <- rnbinom(1,size=size[c],mu=mu1)
+    for (s in ((nsamp / 2) + 1):nsamp) {
+      # mu <- rnorm(1, mean = mu1, sd = 0.2*mu1)
+      numcells.tissue[c, s] <- rnbinom(1, size = size[c], mu = mu1)
     }
   }
 
-  grp <- rep(c(0,1), each=nsamp/2)
+  grp <- rep(c(0, 1), each = nsamp / 2)
 
   total.numcells.tissue <- colSums(numcells.tissue)
-  logodds.numcells.tissue <- log(numcells.tissue/(total.numcells.tissue - numcells.tissue))
+  logodds.numcells.tissue <- log(numcells.tissue / (total.numcells.tissue - numcells.tissue))
   log.abundance.numcells.tissue <- log(numcells.tissue)
 
-  theoretical_log_odds_ratios = log(change_mean*(1-props)/(1 - (change_mean*props)))
-  observed_log_odds_ratios <- rowMeans(logodds.numcells.tissue[,((nsamp/2) + 1):nsamp]) -
-    rowMeans(logodds.numcells.tissue[,1:(nsamp/2)])
+  theoretical_log_odds_ratios <- log(change_mean * (1 - props) / (1 - (change_mean * props)))
+  observed_log_odds_ratios <- rowMeans(logodds.numcells.tissue[, ((nsamp / 2) + 1):nsamp]) -
+    rowMeans(logodds.numcells.tissue[, 1:(nsamp / 2)])
 
 
   theoretical_log_absolute_abundance_ratios <- log(change_mean)
-  observed_log_absolute_abundance_ratios <- rowMeans(log.abundance.numcells.tissue[,((nsamp/2) + 1):nsamp]) -
-    rowMeans(log.abundance.numcells.tissue[,1:(nsamp/2)])
+  observed_log_absolute_abundance_ratios <- rowMeans(log.abundance.numcells.tissue[, ((nsamp / 2) + 1):nsamp]) -
+    rowMeans(log.abundance.numcells.tissue[, 1:(nsamp / 2)])
 
-  ###sampling fraction
-  sampling_fraction <- 1/(1e5*runif(nsamp, min = 0.5, max = 1.5))
-  numcells.10x <- round(sampling_fraction*total.numcells.tissue)
+  ### sampling fraction
+  sampling_fraction <- 1 / (1e5 * runif(nsamp, min = 0.5, max = 1.5))
+  numcells.10x <- round(sampling_fraction * total.numcells.tissue)
 
-  #numcells.10x <- pmax(rnorm(nsamp, mean = mean_10x_cells, sd = sd_10x_cells), 1000) %>% round(.)
-  counts <- matrix(NA,ncol=nsamp, nrow=length(props))
-  rownames(counts) <- paste("c",0:(length(props)-1), sep="")
+  # numcells.10x <- pmax(rnorm(nsamp, mean = mean_10x_cells, sd = sd_10x_cells), 1000) %>% round(.)
+  counts <- matrix(NA, ncol = nsamp, nrow = length(props))
+  rownames(counts) <- paste("c", 0:(length(props) - 1), sep = "")
   colnames(counts) <- paste0("S", 1:nsamp)
 
-  for(s in 1:nsamp){
-    #print(c(numcells.10x[s], numcells.tissue[,s]))
-    counts[,s] <- rmultinom(1, size=numcells.10x[s], prob=numcells.tissue[,s])
-
+  for (s in 1:nsamp) {
+    # print(c(numcells.10x[s], numcells.tissue[,s]))
+    counts[, s] <- rmultinom(1, size = numcells.10x[s], prob = numcells.tissue[, s])
   }
 
-  #print(theoretical_log_odds_ratios)
-  res <- list(counts = counts,
-              observed_log_odds_ratios = observed_log_odds_ratios,
-              theoretical_log_odds_ratios = theoretical_log_odds_ratios,
-              theoretical_log_absolute_abundance_ratios = theoretical_log_absolute_abundance_ratios,
-              observed_log_absolute_abundance_ratios = observed_log_absolute_abundance_ratios
+  # print(theoretical_log_odds_ratios)
+  res <- list(
+    counts = counts,
+    observed_log_odds_ratios = observed_log_odds_ratios,
+    theoretical_log_odds_ratios = theoretical_log_odds_ratios,
+    theoretical_log_absolute_abundance_ratios = theoretical_log_absolute_abundance_ratios,
+    observed_log_absolute_abundance_ratios = observed_log_absolute_abundance_ratios
   )
   return(res)
 }
@@ -116,27 +115,26 @@ simulate_cellCounts_fromTissue <- function(props,
 #'
 #' @return A numeric value representing the sum of variances of log odds of cluster membership across all clusters specified in optim_clusters
 #'
-#' @examples
 #' @export
 #'
 estimate_variance_w_args <- function(pars, counts, total_cells, optim_clusters, centering_matrix = NULL) {
-
   total_var.norm <- vector(mode = "numeric")
   nsamp <- ncol(counts)
   nclust <- nrow(counts)
   log_odds <- matrix(NA, nclust, nsamp)
-  if (is.null(centering_matrix))
-    centering_matrix <- diag(nsamp) - (1/nsamp) * rep(1, nsamp) %*% t(rep(1, nsamp))
-  pars <- pars/exp(mean(log(pars)))
-  for(s in 1:ncol(counts)) {
-    if(sum(pars[s]*total_cells[s] - counts[,s] < 0) > 0) {
+  if (is.null(centering_matrix)) {
+    centering_matrix <- diag(nsamp) - (1 / nsamp) * rep(1, nsamp) %*% t(rep(1, nsamp))
+  }
+  pars <- pars / exp(mean(log(pars)))
+  for (s in 1:ncol(counts)) {
+    if (sum(pars[s] * total_cells[s] - counts[, s] < 0) > 0) {
       warning("non-feasible solution for sample ", s)
     }
-    log_odds[,s] <- log((counts[,s]+1)/(pars[s]*total_cells[s] - counts[,s]))
+    log_odds[, s] <- log((counts[, s] + 1) / (pars[s] * total_cells[s] - counts[, s]))
   }
-  for(c in optim_clusters) {
-    temp_var_estimate <- (1/(nsamp - 1))*t(log_odds[c,])%*%centering_matrix%*%((log_odds[c,]))
-    total_var.norm[c] <- temp_var_estimate[1,1]
+  for (c in optim_clusters) {
+    temp_var_estimate <- (1 / (nsamp - 1)) * t(log_odds[c, ]) %*% centering_matrix %*% ((log_odds[c, ]))
+    total_var.norm[c] <- temp_var_estimate[1, 1]
   }
   return(sum(total_var.norm[optim_clusters]))
 }
@@ -151,12 +149,11 @@ estimate_variance_w_args <- function(pars, counts, total_cells, optim_clusters, 
 #'
 #' @return A numeric vector representing the normalized number of total cells per sample
 #'
-#' @examples
 #' @export
 #'
 ineqfun_data <- function(pars, total_cells) {
-  norm_pars <- pars/exp(mean(log(pars)))
-  ineqres <- (norm_pars*total_cells)
+  norm_pars <- pars / exp(mean(log(pars)))
+  ineqres <- (norm_pars * total_cells)
   return(ineqres)
 }
 
@@ -189,36 +186,48 @@ ineqfun_data <- function(pars, total_cells) {
 #' # Create example data
 #' set.seed(123)
 #' # No of clusters in single cell dataset
-#' K=25
-#' nsamp = 30
-#' alpha = 10^runif(K, min=log10(0.5), max = log10(10))
+#' K <- 25
+#' nsamp <- 30
+#' alpha <- 10^runif(K, min = log10(0.5), max = log10(10))
 #' p <- dirmult::rdirichlet(alpha = alpha) |> sort()
 #' p <- p[p > 0.001]
-#' p <- p/sum(p)
+#' p <- p / sum(p)
 #' size <- rep(10, length(p))
-#' change_mean = rep(1, length(p))
-#' ##clusters 1, 3, 8 and 15 are changed. Clusters 1 and 8 reduce in abundance while clusters 3 and 15 increase
-#' change_mean[c(1,3,8,15)] = c(0.2, 2, 0.2, 2)
-#' depth = 1e9
+#' change_mean <- rep(1, length(p))
+#' ## clusters 1, 3, 8 and 15 are changed. Clusters 1 and 8 reduce in abundance while clusters 3 and 15 increase
+#' change_mean[c(1, 3, 8, 15)] <- c(0.2, 2, 0.2, 2)
+#' depth <- 1e9
 #' # Simulate counts
-#' counts_res <- simulate_cellCounts_fromTissue(props=p,nsamp=nsamp,depth=depth, size = size, change_mean = change_mean)
+#' counts_res <- simulate_cellCounts_fromTissue(
+#'   props = p,
+#'   nsamp = nsamp,
+#'   depth = depth,
+#'   size = size,
+#'   change_mean = change_mean
+#' )
 #' counts <- counts_res$counts
 #'
-#' pheno_data <- data.frame(sampleID = paste0("S", 1:30),groupid = c(rep("group0", 15), rep("group1", 15)))
+#' pheno_data <- data.frame(
+#'   sampleID = paste0("S", 1:30),
+#'   groupid = c(rep("group0", 15), rep("group1", 15))
+#' )
 #' require(magrittr)
 #' pheno_data %<>% tibble::column_to_rownames("sampleID")
 #' require(SummarizedExperiment)
 #' model_formula <- "groupid"
-#' cellcomp_se <- SummarizedExperiment(assays = list(counts=counts),
-#'                                    colData = pheno_data,
-#'                                    metadata = list(modelFormula = model_formula,
-#'                                                    coef_of_interest_index = 2,
-#'                                                    reference_levels_of_variables = list(c("groupid", "group0")),
-#'                                                    random_seed = 123456,
-#'                                                    unchanged_cluster_indices = NULL))
+#' cellcomp_se <- SummarizedExperiment(
+#'   assays = list(counts = counts),
+#'   colData = pheno_data,
+#'   metadata = list(
+#'     modelFormula = model_formula,
+#'     coef_of_interest_index = 2,
+#'     reference_levels_of_variables = list(c("groupid", "group0")),
+#'     random_seed = 123456,
+#'     unchanged_cluster_indices = NULL
+#'   )
+#' )
 #' cellcomp_res <- logodds_optimized_normFactors(cellcomp_se)
 #' print(cellcomp_res$results)
-#'
 #'
 #' @export
 #' @importFrom magrittr %<>%
@@ -226,30 +235,36 @@ ineqfun_data <- function(pars, total_cells) {
 #' @importFrom lme4 glmer
 #' @importFrom SummarizedExperiment SummarizedExperiment assayNames colData assays
 logodds_optimized_normFactors <- function(cellcomp_se, verbose = TRUE) {
-
   # Validate input type
-  if (!inherits(cellcomp_se, "SummarizedExperiment"))
+  if (!inherits(cellcomp_se, "SummarizedExperiment")) {
     stop("cellcomp_se must be a SummarizedExperiment object")
+  }
 
   # Validate counts assay exists
-  if (!"counts" %in% assayNames(cellcomp_se))
+  if (!"counts" %in% assayNames(cellcomp_se)) {
     stop("cellcomp_se must contain an assay named 'counts'")
+  }
 
   # Validate required metadata fields
-  required_fields <- c("modelFormula", "coef_of_interest_index",
-                       "reference_levels_of_variables", "random_seed",
-                       "unchanged_cluster_indices")
+  required_fields <- c(
+    "modelFormula", "coef_of_interest_index",
+    "reference_levels_of_variables", "random_seed",
+    "unchanged_cluster_indices"
+  )
   missing <- setdiff(required_fields, names(cellcomp_se@metadata))
-  if (length(missing) > 0)
+  if (length(missing) > 0) {
     stop("Missing required metadata fields: ", paste(missing, collapse = ", "))
+  }
 
   # Validate colData rownames match count column names
-  if (!setequal(rownames(colData(cellcomp_se)), colnames(cellcomp_se)))
+  if (!setequal(rownames(colData(cellcomp_se)), colnames(cellcomp_se))) {
     stop("colData rownames must match count matrix column names")
+  }
 
   # Validate counts are non-negative
-  if (any(assays(cellcomp_se)$counts < 0))
+  if (any(assays(cellcomp_se)$counts < 0)) {
     stop("Count matrix must contain non-negative values")
+  }
 
   set.seed(cellcomp_se@metadata$random_seed)
 
@@ -262,9 +277,12 @@ logodds_optimized_normFactors <- function(cellcomp_se, verbose = TRUE) {
     optim_clusters <- 1:length(clusters)
   } else if (is.character(unchanged)) {
     matched <- match(unchanged, clusters)
-    if (any(is.na(matched)))
-      stop("unchanged_cluster_indices names not found: ",
-           paste(unchanged[is.na(matched)], collapse = ", "))
+    if (any(is.na(matched))) {
+      stop(
+        "unchanged_cluster_indices names not found: ",
+        paste(unchanged[is.na(matched)], collapse = ", ")
+      )
+    }
     optim_clusters <- matched
   } else {
     optim_clusters <- unchanged
@@ -272,27 +290,33 @@ logodds_optimized_normFactors <- function(cellcomp_se, verbose = TRUE) {
 
   nsamp <- ncol(cellcomp_se)
 
-  pheno_data <- colData(cellcomp_se) %>% as.data.frame() %>% tibble::rownames_to_column("sampleid")
-  if(!is.null(cellcomp_se@metadata$reference_levels_of_variables)) {
+  pheno_data <- colData(cellcomp_se) %>%
+    as.data.frame() %>%
+    tibble::rownames_to_column("sampleid")
+  if (!is.null(cellcomp_se@metadata$reference_levels_of_variables)) {
     reference_levels_of_variables <- cellcomp_se@metadata$reference_levels_of_variables
-    for(i in 1:length(reference_levels_of_variables)) {
+    for (i in 1:length(reference_levels_of_variables)) {
       pheno_data[[reference_levels_of_variables[[i]][1]]] <- as.factor(pheno_data[[reference_levels_of_variables[[i]][1]]])
       pheno_data[[reference_levels_of_variables[[i]][1]]] <- relevel(pheno_data[[reference_levels_of_variables[[i]][1]]],
-                                                                     ref = reference_levels_of_variables[[i]][2])
+        ref = reference_levels_of_variables[[i]][2]
+      )
     }
   }
   counts <- assays(cellcomp_se)$counts
 
-  total_cells = data.frame(total_cells = colSums(counts),
-                           colnames(counts))
+  total_cells <- data.frame(
+    total_cells = colSums(counts),
+    colnames(counts)
+  )
   colnames(total_cells)[2] <- "sampleid"
 
 
   counts %<>% as.data.frame() %>% tibble::rownames_to_column(var = "clusterid")
 
-  counts_long <- counts %>% tidyr::pivot_longer( cols = -dplyr::starts_with("clusterid"), # Specify the columns to pivot
-                                                 names_to = "sampleid",     # New column to hold variable names
-                                                 values_to = "count"                # New column to hold values
+  counts_long <- counts %>% tidyr::pivot_longer(
+    cols = -dplyr::starts_with("clusterid"), # Specify the columns to pivot
+    names_to = "sampleid", # New column to hold variable names
+    values_to = "count" # New column to hold values
   )
 
   Total_Cells <- total_cells$total_cells
@@ -300,7 +324,7 @@ logodds_optimized_normFactors <- function(cellcomp_se, verbose = TRUE) {
   counts %<>% tibble::column_to_rownames("clusterid")
 
   # Precompute centering matrix for variance estimation
-  centering_matrix <- diag(nsamp) - (1/nsamp) * rep(1, nsamp) %*% t(rep(1, nsamp))
+  centering_matrix <- diag(nsamp) - (1 / nsamp) * rep(1, nsamp) %*% t(rep(1, nsamp))
 
   ineqfun <- function(pars) {
     ineqres <- ineqfun_data(pars, Total_Cells)
@@ -315,7 +339,7 @@ logodds_optimized_normFactors <- function(cellcomp_se, verbose = TRUE) {
   old_outlier_clusters <- 1
   count_iter <- 1
 
-  while(!found_stable_solution & count_iter < 10) {
+  while (!found_stable_solution & count_iter < 10) {
     if (verbose) message("Running iteration no. ", count_iter)
     count_iter <- count_iter + 1
 
@@ -326,11 +350,9 @@ logodds_optimized_normFactors <- function(cellcomp_se, verbose = TRUE) {
     counts_long_norm[["sampleid"]] <- as.factor(counts_long_norm[["sampleid"]])
 
 
-
     estimate_variance <- function(pars) {
       estimate_variance_w_args(pars, counts, Total_Cells, optim_clusters, centering_matrix)
     }
-
 
 
     max_optim_retries <- 5
@@ -339,26 +361,28 @@ logodds_optimized_normFactors <- function(cellcomp_se, verbose = TRUE) {
       initial_guess <- runif(nsamp, min = 0.7, max = 1.4)
       infeasible_solution <- TRUE
       feasibility_iter <- 0
-      while(infeasible_solution) {
+      while (infeasible_solution) {
         feasibility_iter <- feasibility_iter + 1
-        if (feasibility_iter > 1000)
+        if (feasibility_iter > 1000) {
           stop("Could not find a feasible initial guess after 1000 attempts")
-        norm_pars <- initial_guess/exp(mean(log(initial_guess)))
-        if(sum((norm_pars*counts_long_norm$total_cells - counts_long_norm$count) < 0) > 0) {
+        }
+        norm_pars <- initial_guess / exp(mean(log(initial_guess)))
+        if (sum((norm_pars * counts_long_norm$total_cells - counts_long_norm$count) < 0) > 0) {
           initial_guess <- runif(nsamp, min = 0.7, max = 1.4)
-        }else{
+        } else {
           infeasible_solution <- FALSE
         }
       }
 
-      temp_res <- Rsolnp::solnp(pars = initial_guess,
-                                estimate_variance,
-                                LB = rep(0.1, nsamp),
-                                UB = rep(50, nsamp),
-                                ineqfun = ineqfun,
-                                ineqLB = matrixStats::colMaxs(counts %>% as.matrix(.)),
-                                ineqUB = rep(2*max(Total_Cells), nsamp),
-                                control = list(tol = 1e-12,delta = 1e-9, trace = 0),
+      temp_res <- Rsolnp::solnp(
+        pars = initial_guess,
+        estimate_variance,
+        LB = rep(0.1, nsamp),
+        UB = rep(50, nsamp),
+        ineqfun = ineqfun,
+        ineqLB = matrixStats::colMaxs(counts %>% as.matrix(.)),
+        ineqUB = rep(2 * max(Total_Cells), nsamp),
+        control = list(tol = 1e-12, delta = 1e-9, trace = 0),
       )
 
       if (temp_res$convergence == 0) {
@@ -367,13 +391,15 @@ logodds_optimized_normFactors <- function(cellcomp_se, verbose = TRUE) {
       }
       if (verbose) message("Optimization did not converge, retrying (", retry, "/", max_optim_retries, ")")
     }
-    if (!optim_converged)
+    if (!optim_converged) {
       warning("Optimization did not converge after ", max_optim_retries, " attempts")
+    }
 
-    optim.pars <- temp_res$pars/exp(mean(log(temp_res$pars)))
+    optim.pars <- temp_res$pars / exp(mean(log(temp_res$pars)))
 
     optim_factor <- data.frame(colnames(counts),
-                               optim.norm.factor = optim.pars)
+      optim.norm.factor = optim.pars
+    )
     colnames(optim_factor)[1] <- "sampleid"
     counts_long_norm %<>% merge(., optim_factor)
 
@@ -383,46 +409,56 @@ logodds_optimized_normFactors <- function(cellcomp_se, verbose = TRUE) {
     comparison <- vector(mode = "character")
     cluster_id <- vector(mode = "character")
     cluster_significance <- vector(mode = "numeric")
-    for(clust in clusters) {
+    for (clust in clusters) {
       formula1 <- paste0("cbind(count+1, (round(total_cells*optim.norm.factor) - count)) ~ (1|sampleid) + ", model_formula) %>% as.formula()
       formula0 <- paste0("cbind(count+1, (round(total_cells*optim.norm.factor) - count)) ~ (1|sampleid)") %>% as.formula()
 
-      tryCatch({
-        glmerFit <- lme4::glmer(formula = formula1,
-                          data = counts_long_norm %>% dplyr::filter(clusterid == clust) ,
-                          family = "binomial")
+      tryCatch(
+        {
+          glmerFit <- lme4::glmer(
+            formula = formula1,
+            data = counts_long_norm %>% dplyr::filter(clusterid == clust),
+            family = "binomial"
+          )
 
-        sglmerFit <- summary(glmerFit)
+          sglmerFit <- summary(glmerFit)
 
-        # Resolve character coef_of_interest to integer index on first cluster
-        if (is.character(coef_of_interest)) {
-          coef_names <- row.names(sglmerFit$coefficients)
-          coef_idx <- match(coef_of_interest, coef_names)
-          if (is.na(coef_idx))
-            stop("coef_of_interest_index name '", coef_of_interest,
-                 "' not found in model coefficients: ",
-                 paste(coef_names, collapse = ", "))
-          coef_of_interest <- coef_idx
+          # Resolve character coef_of_interest to integer index on first cluster
+          if (is.character(coef_of_interest)) {
+            coef_names <- row.names(sglmerFit$coefficients)
+            coef_idx <- match(coef_of_interest, coef_names)
+            if (is.na(coef_idx)) {
+              stop(
+                "coef_of_interest_index name '", coef_of_interest,
+                "' not found in model coefficients: ",
+                paste(coef_names, collapse = ", ")
+              )
+            }
+            coef_of_interest <- coef_idx
+          }
+
+          estimates[temp_count] <- sglmerFit$coefficients[coef_of_interest, 1]
+
+          glmerFit0 <- lme4::glmer(
+            formula = formula0,
+            data = counts_long_norm %>% dplyr::filter(clusterid == clust),
+            family = "binomial"
+          )
+
+          anova_res <- anova(glmerFit, glmerFit0)
+
+          cluster_significance[temp_count_cluster] <- anova_res$`Pr(>Chisq)`[2]
+          estimates_significance[temp_count] <- sglmerFit$coefficients[coef_of_interest, 4]
+          comparison[temp_count] <- row.names(sglmerFit$coefficients)[coef_of_interest]
+        },
+        error = function(e) {
+          if (verbose) message("  GLMM failed for cluster ", clust, ": ", e$message)
+          estimates[temp_count] <<- NA
+          estimates_significance[temp_count] <<- NA
+          comparison[temp_count] <<- NA
+          cluster_significance[temp_count_cluster] <<- NA
         }
-
-        estimates[temp_count] <- sglmerFit$coefficients[coef_of_interest,1]
-
-        glmerFit0 <- lme4::glmer(formula = formula0,
-                           data = counts_long_norm %>% dplyr::filter(clusterid == clust) ,
-                           family = "binomial")
-
-        anova_res <- anova(glmerFit, glmerFit0)
-
-        cluster_significance[temp_count_cluster] <- anova_res$`Pr(>Chisq)`[2]
-        estimates_significance[temp_count] <- sglmerFit$coefficients[coef_of_interest,4]
-        comparison[temp_count] <- row.names(sglmerFit$coefficients)[coef_of_interest]
-      }, error = function(e) {
-        if (verbose) message("  GLMM failed for cluster ", clust, ": ", e$message)
-        estimates[temp_count] <<- NA
-        estimates_significance[temp_count] <<- NA
-        comparison[temp_count] <<- NA
-        cluster_significance[temp_count_cluster] <<- NA
-      })
+      )
 
       cluster_id[temp_count] <- rep(clust, 1)
       temp_count <- temp_count + 1
@@ -434,22 +470,20 @@ logodds_optimized_normFactors <- function(cellcomp_se, verbose = TRUE) {
     temp_res <- data.frame(cluster = 1:nrow(counts), cluster_significance) %>% dplyr::arrange(cluster_significance)
     outlier_clusters <- temp_res %>%
       dplyr::filter(cluster_significance < 0.05) %>%
-      dplyr::slice(1:min(c(nrow(.), floor(nrow(counts)/2)))) %>%
+      dplyr::slice(1:min(c(nrow(.), floor(nrow(counts) / 2)))) %>%
       .$cluster %>%
       sort()
 
-    if(identical(old_outlier_clusters, outlier_clusters) | !is.null(cellcomp_se@metadata$unchanged_cluster_indices)) {
+    if (identical(old_outlier_clusters, outlier_clusters) | !is.null(cellcomp_se@metadata$unchanged_cluster_indices)) {
       found_stable_solution <- TRUE
       if (verbose) message("Found stable solution")
-    }else{
+    } else {
       old_outlier_clusters <- outlier_clusters
       optim_clusters <- setdiff(1:nrow(counts), outlier_clusters)
     }
-
   }
 
   results$adjusted_pvalue <- p.adjust(results$estimates_significance, method = "BH")
 
-  return(list(results=results, optim_factor = optim_factor))
-
+  return(list(results = results, optim_factor = optim_factor))
 }
