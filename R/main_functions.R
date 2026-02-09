@@ -442,6 +442,9 @@ logodds_optimized_normFactors <- function(cellcomp_se, verbose = TRUE) {
     }
 
   }
+
+  results$adjusted_pvalue <- p.adjust(results$estimates_significance, method = "BH")
+
   return(list(results=results, optim_factor = optim_factor))
 
 }
