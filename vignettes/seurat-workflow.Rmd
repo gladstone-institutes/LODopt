@@ -1,0 +1,135 @@
+---
+title: "Seurat Workflow for LODopt"
+author: "LODopt developers"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Seurat Workflow for LODopt}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+if (!requireNamespace("SeuratObject", quietly = TRUE)) {
+  stop("This vignette requires the SeuratObject package. ",
+       "Install it with: install.packages('SeuratObject')")
+}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Introduction
+
+If you have a **Seurat object** from your scRNA-seq analysis pipeline, LODopt
+provides `prepare_from_seurat()` to convert it directly into the
+`SummarizedExperiment` format that `logodds_optimized_normFactors()` expects.
+This vignette walks through the full workflow.
+
+## Load packages
+
+```{r load-packages, message = FALSE, warning = FALSE}
+library(LODopt)
+library(SeuratObject)
+```
+
+## Load built-in example data
+
+LODopt ships with `mock_seurat_data`, a small simulated dataset with 6 cell
+types across 12 samples (6 control, 6 treated). Two cell types — B_cells and
+Monocytes — have differential abundance between groups.
+
+```{r load-data}
+data("mock_seurat_data")
+str(mock_seurat_data, max.level = 1)
+```
+
+The list contains:
+
+- **`counts_matrix`** — a sparse gene-by-cell expression matrix
+- **`cell_metadata`** — a data frame with `cell_type`, `sample_id`, and `group`
+  columns
+
+## Create a Seurat object
+
+This is the step where you would normally already have a Seurat object from your
+own analysis. Here we construct one from the example data:
+
+```{r create-seurat}
+seurat_obj <- CreateSeuratObject(
+  counts = mock_seurat_data$counts_matrix,
+  meta.data = mock_seurat_data$cell_metadata
+)
+seurat_obj
+```
+
+Let's check the metadata:
+
+```{r check-meta}
+head(seurat_obj@meta.data)
+table(seurat_obj$sample_id, seurat_obj$group)
+```
+
+## Convert to SummarizedExperiment
+
+`prepare_from_seurat()` handles the conversion. You need to specify:
+
+- **`cluster_col`** — the metadata column with cell type labels
+- **`sample_col`** — the metadata column with sample identifiers
+- **`pheno_cols`** — sample-level phenotype columns to include
+- **`model_formula`** — the right-hand side of the model formula
+- **`coef_of_interest`** — which coefficient to test (index or name)
+- **`reference_levels`** — reference level for categorical variables
+
+```{r convert}
+cellcomp_se <- prepare_from_seurat(
+  seurat_obj,
+  cluster_col = "cell_type",
+  sample_col = "sample_id",
+  pheno_cols = "group",
+  model_formula = "group",
+  coef_of_interest = 2,
+  reference_levels = list(group = "control"),
+  random_seed = 42,
+  unchanged_clusters = NULL
+)
+cellcomp_se
+```
+
+## Run differential abundance analysis
+
+Now pass the `SummarizedExperiment` to `logodds_optimized_normFactors()`:
+
+```{r run-analysis, message = TRUE}
+results <- logodds_optimized_normFactors(cellcomp_se)
+```
+
+## Examine results
+
+The output is a list with `results` (per-cluster statistics) and `optim_factor`
+(estimated normalization factors).
+
+```{r results-table}
+results$results
+```
+
+The key columns are:
+
+- **`estimates`** — log-odds ratio for each cell type
+- **`estimates_significance`** — raw p-value
+- **`adjusted_pvalue`** — BH-adjusted p-value
+
+```{r norm-factors}
+results$optim_factor
+```
+
+## Conclusion
+
+The Seurat workflow is straightforward:
+
+1. Start with a Seurat object containing cell type and sample annotations
+2. Use `prepare_from_seurat()` to convert to a `SummarizedExperiment`
+3. Run `logodds_optimized_normFactors()` to test for differential abundance
+
+For more details on the underlying method, see `vignette("intro", package = "LODopt")`.

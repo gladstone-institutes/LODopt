@@ -41,18 +41,18 @@ starting by simulating tissue level counts and then downsampling to obtain singl
 # Create example data
 set.seed(123)
 # No of clusters in single cell dataset
-K=25
-nsamp = 30
-alpha = 10^runif(K, min=log10(0.5), max = log10(10))
+K <- 25
+nsamp <- 30
+alpha <- 10^runif(K, min = log10(0.5), max = log10(10))
 p <- dirmult::rdirichlet(alpha = alpha) |> sort()
 p <- p[p > 0.001]
-p <- p/sum(p)
+p <- p / sum(p)
 size <- rep(10, length(p))
-change_mean = rep(1, length(p))
-change_mean[c(1,3,8,15)] = c(0.2, 2, 0.2, 2)
-depth = 1e9
+change_mean <- rep(1, length(p))
+change_mean[c(1, 3, 8, 15)] <- c(0.2, 2, 0.2, 2)
+depth <- 1e9
 # Simulate counts
-counts_res <- simulate_cellCounts_fromTissue(props=p,nsamp=nsamp,depth=depth, size = size, change_mean = change_mean)
-print(counts_res$counts[1:3,1:3])
+counts_res <- simulate_cellCounts_fromTissue(props = p, nsamp = nsamp, depth = depth, size = size, change_mean = change_mean)
+print(counts_res$counts[1:3, 1:3])
 
 }

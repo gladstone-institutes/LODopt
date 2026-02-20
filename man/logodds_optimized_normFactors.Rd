@@ -4,7 +4,7 @@
 \alias{logodds_optimized_normFactors}
 \title{logodds_optimized_normFactors}
 \usage{
-logodds_optimized_normFactors(cellcomp_se)
+logodds_optimized_normFactors(cellcomp_se, verbose = TRUE)
 }
 \arguments{
 \item{cellcomp_se}{a SummarizedExperiment object that includes
@@ -20,12 +20,14 @@ logodds_optimized_normFactors(cellcomp_se)
 \item unchanged_cluster_indices cluster indices of the clusters known not to change, set to NULL if not known
 }
 }}
+
+\item{verbose}{Logical; if TRUE (default), prints progress messages}
 }
 \value{
 A list with two elements
 \itemize{
 \item results: data frame of results of differential analyses with 4 columns - cluster_id, comparison, estimates (log odds ratio) and estimate_significance (pvalue)
-\item optim_factors: a numeric vector with the optimal normalization factors for each sample in the data
+\item optim_factor: a data frame with columns sampleid and optim.norm.factor
 }
 }
 \description{
@@ -35,35 +37,47 @@ The primary LODopt method
 # Create example data
 set.seed(123)
 # No of clusters in single cell dataset
-K=25
-nsamp = 30
-alpha = 10^runif(K, min=log10(0.5), max = log10(10))
+K <- 25
+nsamp <- 30
+alpha <- 10^runif(K, min = log10(0.5), max = log10(10))
 p <- dirmult::rdirichlet(alpha = alpha) |> sort()
 p <- p[p > 0.001]
-p <- p/sum(p)
+p <- p / sum(p)
 size <- rep(10, length(p))
-change_mean = rep(1, length(p))
-##clusters 1, 3, 8 and 15 are changed. Clusters 1 and 8 reduce in abundance while clusters 3 and 15 increase
-change_mean[c(1,3,8,15)] = c(0.2, 2, 0.2, 2)
-depth = 1e9
+change_mean <- rep(1, length(p))
+## clusters 1, 3, 8 and 15 are changed. Clusters 1 and 8 reduce in abundance while clusters 3 and 15 increase
+change_mean[c(1, 3, 8, 15)] <- c(0.2, 2, 0.2, 2)
+depth <- 1e9
 # Simulate counts
-counts_res <- simulate_cellCounts_fromTissue(props=p,nsamp=nsamp,depth=depth, size = size, change_mean = change_mean)
+counts_res <- simulate_cellCounts_fromTissue(
+  props = p,
+  nsamp = nsamp,
+  depth = depth,
+  size = size,
+  change_mean = change_mean
+)
 counts <- counts_res$counts
 
-pheno_data <- data.frame(sampleID = paste0("S", 1:30),groupid = c(rep("group0", 15), rep("group1", 15)))
+pheno_data <- data.frame(
+  sampleID = paste0("S", 1:30),
+  groupid = c(rep("group0", 15), rep("group1", 15))
+)
 require(magrittr)
 pheno_data \%<>\% tibble::column_to_rownames("sampleID")
 require(SummarizedExperiment)
 model_formula <- "groupid"
-cellcomp_se <- SummarizedExperiment(assays = list(counts=counts),
-                                   colData = pheno_data,
-                                   metadata = list(modelFormula = model_formula,
-                                                   coef_of_interest_index = 2,
-                                                   reference_levels_of_variables = list(c("groupid", "group0")),
-                                                   random_seed = 123456,
-                                                   unchanged_cluster_indices = NULL))
+cellcomp_se <- SummarizedExperiment(
+  assays = list(counts = counts),
+  colData = pheno_data,
+  metadata = list(
+    modelFormula = model_formula,
+    coef_of_interest_index = 2,
+    reference_levels_of_variables = list(c("groupid", "group0")),
+    random_seed = 123456,
+    unchanged_cluster_indices = NULL
+  )
+)
 cellcomp_res <- logodds_optimized_normFactors(cellcomp_se)
-print(cellcomp_res$res)
-
+print(cellcomp_res$results)
 
 }

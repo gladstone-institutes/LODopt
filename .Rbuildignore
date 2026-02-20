@@ -1,0 +1,9 @@
+^renv$
+^renv\.lock$
+^\.github$
+^CLAUDE\.md$
+^\.claude$
+^LICENSE\.md$
+^.*\.Rproj$
+^\.Rproj\.user$
+^data-raw$

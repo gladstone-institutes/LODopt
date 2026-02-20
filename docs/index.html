@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="index.html">LODopt</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -32,6 +32,13 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
 <li class="nav-item"><a class="nav-link" href="articles/intro.html">Quick Start Guide</a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
+<li><a class="dropdown-item" href="articles/intro.html">Quick Start Guide</a></li>
+    <li><a class="dropdown-item" href="articles/seurat-workflow.html">Seurat Workflow</a></li>
+  </ul>
+</li>
 <li class="nav-item"><a class="nav-link" href="reference/index.html">Reference</a></li>
 <li class="nav-item"><a class="nav-link" href="news/index.html">News</a></li>
       </ul>
@@ -48,7 +55,7 @@
 <div class="section level1">
 <div class="page-header"><h1 id="lodopt">LODopt<a class="anchor" aria-label="anchor" href="#lodopt"></a>
 </h1></div>
-<p><em>Authors</em>: Reuben Thomas, Ayushi Agrawal, Natalie Elphick and Michela Traglia</p>
+<p><em>Authors</em>: Reuben Thomas, Ayushi Agrawal, Natalie Gill and Michela Traglia</p>
 <div class="section level2">
 <h2 id="background">Background<a class="anchor" aria-label="anchor" href="#background"></a>
 </h2>
@@ -72,9 +79,19 @@
 <span><span class="fu">credentials</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/credentials/reference/set_github_pat.html" class="external-link">set_github_pat</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="tutorial">Tutorial<a class="anchor" aria-label="anchor" href="#tutorial"></a>
+<h2 id="tutorials">Tutorials<a class="anchor" aria-label="anchor" href="#tutorials"></a>
 </h2>
-<p>This <a href="https://gladstone-institutes.github.io/LODopt/articles/intro.html">tutorial</a> introduces how to use the LODopt R package.</p>
+<ul>
+<li>
+<a href="https://gladstone-institutes.github.io/LODopt/articles/intro.html">Quick Start Guide</a> — introduction to using LODopt with a SummarizedExperiment</li>
+<li>
+<a href="https://gladstone-institutes.github.io/LODopt/articles/seurat-workflow.html">Seurat Workflow</a> — converting a Seurat object and running differential abundance analysis</li>
+</ul>
+</div>
+<div class="section level2">
+<h2 id="ai-disclosure-statement">AI Disclosure Statement<a class="anchor" aria-label="anchor" href="#ai-disclosure-statement"></a>
+</h2>
+<p>Generative AI tools (Claude Code, Anthropic) were used as coding assistants during the development of this package. The authors maintain full responsibility for the accuracy, reproducibility, and scientific validity of all code. AI-assisted outputs were reviewed and validated against expected behavior before integration. The research questions, analytical approaches, parameter selections, and scientific interpretations were determined independently by the authors without AI input.</p>
 </div>
 </div>
 
@@ -90,7 +107,8 @@
 <div class="license">
 <h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
-<li><a href="https://www.r-project.org/Licenses/GPL-2" class="external-link">GPL-2</a></li>
+<li><a href="LICENSE.html">Full license</a></li>
+<li><small><a href="https://opensource.org/licenses/mit-license.php" class="external-link">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a></small></li>
 </ul>
 </div>
 
@@ -108,7 +126,7 @@
 <li>
 <a href="mailto:reuben.thomas@gladstone.ucsf.edu">Reuben Thomas</a> <br><small class="roles"> Author, maintainer </small>   </li>
 <li>Ayushi Agrawal <br><small class="roles"> Author </small>   </li>
-<li>Natalie Elphick <br><small class="roles"> Author </small>   </li>
+<li>Natalie Gill <br><small class="roles"> Author </small>   </li>
 <li>Michela Traglia <br><small class="roles"> Author </small>   </li>
 </ul>
 </div>

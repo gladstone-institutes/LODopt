@@ -5,29 +5,45 @@ template:
   bootswatch: flatly
 
 reference:
-  - title: "Function reference"
-    desc: "Complete documentation for all functions in the LODopt package"
+  - title: "Core functions"
+    desc: "Primary analysis functions"
     contents:
       - "logodds_optimized_normFactors"
       - "simulate_cellCounts_fromTissue"
       - "estimate_variance_w_args"
       - "ineqfun_data"
+  - title: "Seurat object input"
+    desc: "Helpers for working with Seurat objects"
+    contents:
+      - "prepare_from_seurat"
+  - title: "Data"
+    desc: "Built-in example datasets"
+    contents:
+      - "mock_seurat_data"
 
 articles:
-  intro:
-    title: "Quick Start Guide"
-    desc: "Learn how to use LODopt for cell type abundance analysis"
+  - title: "Getting started"
     contents:
       - "intro"
+  - title: "Workflows"
+    contents:
+      - "seurat-workflow"
 
 navbar:
   structure:
-    left:  [intro, reference, news]
+    left:  [intro, articles, reference, news]
     right: [github]
   components:
     intro:
       text: Quick Start Guide
       href: articles/intro.html
+    articles:
+      text: Articles
+      menu:
+        - text: "Quick Start Guide"
+          href: articles/intro.html
+        - text: "Seurat Workflow"
+          href: articles/seurat-workflow.html
     reference:
       text: Reference
       href: reference/index.html
@@ -48,7 +64,7 @@ authors:
     href: mailto:reuben.thomas@gladstone.ucsf.edu
   "Ayushi Agrawal":
     href: ~
-  "Natalie Elphick":
+  "Natalie Gill":
     href: ~
   "Michela Traglia":
     href: ~

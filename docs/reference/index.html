@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">LODopt</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -16,6 +16,11 @@
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/intro.html">Quick Start Guide</a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/intro.html">Quick Start Guide</a></li>
+    <li><a class="dropdown-item" href="../articles/seurat-workflow.html">Seurat Workflow</a></li>
+  </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">News</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><a class="external-link nav-link" href="https://github.com/gladstone-institutes/LODopt"><span class="fa fa-github fa-lg"></span></a></li>
@@ -31,12 +36,11 @@
     </div>
 
     <div class="section level2">
-      <h2 id="function-reference">Function reference<a class="anchor" aria-label="anchor" href="#function-reference"></a></h2>
+      <h2 id="core-functions">Core functions<a class="anchor" aria-label="anchor" href="#core-functions"></a></h2>
 
-      <div class="section-desc"><p>Complete documentation for all functions in the LODopt package</p></div>
+      <div class="section-desc"><p>Primary analysis functions</p></div>
 
-
-    </div><div class="section level2">
+      <dl></dl></div><div class="section level2">
 
 
 
@@ -47,26 +51,62 @@
 
         </dt>
         <dd>logodds_optimized_normFactors</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="simulate_cellCounts_fromTissue.html">simulate_cellCounts_fromTissue()</a></code>
 
         </dt>
         <dd>simulate_cellCounts_fromTissue</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="estimate_variance_w_args.html">estimate_variance_w_args()</a></code>
 
         </dt>
         <dd>estimate_variance_w_args</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="ineqfun_data.html">ineqfun_data()</a></code>
 
         </dt>
         <dd>ineqfun_data</dd>
+      </dl></div><div class="section level2">
+      <h2 id="seurat-object-input">Seurat object input<a class="anchor" aria-label="anchor" href="#seurat-object-input"></a></h2>
+
+      <div class="section-desc"><p>Helpers for working with Seurat objects</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="prepare_from_seurat.html">prepare_from_seurat()</a></code>
+
+        </dt>
+        <dd>Prepare LODopt input from a Seurat object</dd>
+      </dl></div><div class="section level2">
+      <h2 id="data">Data<a class="anchor" aria-label="anchor" href="#data"></a></h2>
+
+      <div class="section-desc"><p>Built-in example datasets</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="mock_seurat_data.html">mock_seurat_data</a></code>
+
+        </dt>
+        <dd>Mock single-cell data for Seurat workflow examples</dd>
       </dl></div>
-  </main></div>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+    </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">
