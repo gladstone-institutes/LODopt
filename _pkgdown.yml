@@ -74,5 +74,5 @@ footer:
     left: [developed_by]
     right: [dev]
   components:
-    developed_by: "Developed by Reuben Thomas, Ayushi Agrawal, Natalie Elphick and Michela Traglia."
+    developed_by: "Developed by Reuben Thomas, Ayushi Agrawal, Natalie Gill and Michela Traglia."
     dev: "Site built with pkgdown 2.1.0."
