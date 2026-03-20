@@ -43,9 +43,10 @@ credentials::set_github_pat()
 
 ## Tutorials
 
-- [Quick Start
-  Guide](https://gladstone-institutes.github.io/LODopt/articles/intro.html)
-  — introduction to using LODopt with a SummarizedExperiment
+- [Simulated Data
+  Workflow](https://gladstone-institutes.github.io/LODopt/articles/intro.html)
+  — introduction to using LODopt with simulated single-cell data and a
+  SummarizedExperiment object
 - [Seurat
   Workflow](https://gladstone-institutes.github.io/LODopt/articles/seurat-workflow.html)
   — converting a Seurat object and running differential abundance
