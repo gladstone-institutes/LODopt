@@ -31,19 +31,19 @@ articles:
 
 navbar:
   structure:
-    left:  [intro, articles, reference, news]
+    left:  [home, vignettes, reference, news]
     right: [github]
   components:
-    intro:
-      text: Quick Start Guide
-      href: articles/intro.html
-    articles:
-      text: Articles
+    home:
+      text: Get Started
+      href: index.html
+    vignettes:
+      text: Vignettes
       menu:
-        - text: "Quick Start Guide"
-          href: articles/intro.html
         - text: "Seurat Workflow"
           href: articles/seurat-workflow.html
+        - text: "Simulated Data Workflow"
+          href: articles/intro.html
     reference:
       text: Reference
       href: reference/index.html
