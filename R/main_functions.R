@@ -127,10 +127,12 @@ estimate_variance_w_args <- function(pars, counts, total_cells, optim_clusters, 
   }
   pars <- pars / exp(mean(log(pars)))
   for (s in 1:ncol(counts)) {
-    if (sum(pars[s] * total_cells[s] - counts[, s] < 0) > 0) {
+    denom <- pars[s] * total_cells[s] - counts[, s]
+    if (any(denom <= 0)) {
       warning("non-feasible solution for sample ", s)
+      return(.Machine$double.xmax)
     }
-    log_odds[, s] <- log((counts[, s] + 1) / (pars[s] * total_cells[s] - counts[, s]))
+    log_odds[, s] <- log((counts[, s] + 1) / denom)
   }
   for (c in optim_clusters) {
     temp_var_estimate <- (1 / (nsamp - 1)) * t(log_odds[c, ]) %*% centering_matrix %*% ((log_odds[c, ]))
