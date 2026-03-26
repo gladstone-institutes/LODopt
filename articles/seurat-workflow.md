@@ -161,18 +161,18 @@ The key columns are:
 ``` r
 results$optim_factor
 #>     sampleid optim.norm.factor
-#> 1   sample_1         0.9646425
-#> 2  sample_10         0.9138447
-#> 3  sample_11         1.0161281
-#> 4  sample_12         1.1057734
-#> 5   sample_2         1.0369238
-#> 6   sample_3         1.0025710
-#> 7   sample_4         0.9981739
-#> 8   sample_5         0.9726008
-#> 9   sample_6         1.0106215
-#> 10  sample_7         0.9770772
-#> 11  sample_8         1.0138604
-#> 12  sample_9         0.9991902
+#> 1   sample_1         0.9646355
+#> 2  sample_10         0.9138492
+#> 3  sample_11         1.0161318
+#> 4  sample_12         1.1057699
+#> 5   sample_2         1.0369179
+#> 6   sample_3         1.0025845
+#> 7   sample_4         0.9981770
+#> 8   sample_5         0.9726006
+#> 9   sample_6         1.0106156
+#> 10  sample_7         0.9770877
+#> 11  sample_8         1.0138535
+#> 12  sample_9         0.9991834
 ```
 
 ## Conclusion

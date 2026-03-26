@@ -52,6 +52,12 @@ credentials::set_github_pat()
   — converting a Seurat object and running differential abundance
   analysis
 
+## Citation
+
+Thomas, R., Agrawal, A., Gill, N., & Traglia, M. (2026).
+gladstone-institutes/LODopt: v1.1.0 (v1.1.0). Zenodo.
+<https://doi.org/10.5281/zenodo.19239199>
+
 ## AI Disclosure Statement
 
 Generative AI tools (Claude Code, Anthropic) were used as coding
