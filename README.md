@@ -1,4 +1,4 @@
-![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg) [![GitHub issues](https://img.shields.io/github/issues/gladstone-institutes/LODopt)](https://github.com/gladstone-institutes/LODopt/issues) ![R >= 4.4.0](https://img.shields.io/badge/R-4.4.0-blue) ![RStudio](https://img.shields.io/badge/RStudio-2024.12.0%2B467-blue)
+[![DOI](https://zenodo.org/badge/1003934501.svg)](https://doi.org/10.5281/zenodo.19239198) ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg) [![GitHub issues](https://img.shields.io/github/issues/gladstone-institutes/LODopt)](https://github.com/gladstone-institutes/LODopt/issues) ![R >= 4.4.0](https://img.shields.io/badge/R-4.4.0-blue) ![RStudio](https://img.shields.io/badge/RStudio-2024.12.0%2B467-blue)
 
 
 # LODopt
@@ -27,6 +27,9 @@ credentials::set_github_pat()
 ## Tutorials
 - [Simulated Data Workflow](https://gladstone-institutes.github.io/LODopt/articles/intro.html) — introduction to using LODopt with simulated single-cell data and a SummarizedExperiment object
 - [Seurat Workflow](https://gladstone-institutes.github.io/LODopt/articles/seurat-workflow.html) — converting a Seurat object and running differential abundance analysis
+
+## Citation
+Thomas, R., Agrawal, A., Gill, N., & Traglia, M. (2026). gladstone-institutes/LODopt: v1.1.0 (v1.1.0). Zenodo. https://doi.org/10.5281/zenodo.19239199
 
 ## AI Disclosure Statement
 
