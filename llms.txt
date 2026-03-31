@@ -55,8 +55,27 @@ credentials::set_github_pat()
 ## Citation
 
 Thomas, R., Agrawal, A., Gill, N., & Traglia, M. (2026).
-gladstone-institutes/LODopt: v1.1.0 (v1.1.0). Zenodo.
+gladstone-institutes/LODopt: v1.1.0. Zenodo.
 <https://doi.org/10.5281/zenodo.19239199>
+
+## Suggested Methods Description
+
+LODopt \[Thomas, R., Agrawal, A., Gill, N., & Traglia, M. (2026).
+gladstone-institutes/LODopt: v1.1.0. Zenodo.
+<https://doi.org/10.5281/zenodo.19239199>\] is run on a per cluster
+basis. The method estimates the differences in cluster/cell-type
+membership between experimental conditions (e.g. genotype, treatment) in
+terms of log odds ratios. It fits a binomial generalized linear mixed
+effects model of the normalized cell counts per sample as a function of
+the experimental condition of the underlying sample. The sample-specific
+tissue-size normalization factors are derived by minimizing the variance
+of log odds of cluster membership across samples. A variation of this
+method with unit normalization factors was previously used in
+Koutsodendris et al. \[Koutsodendris, Nicole, Jessica Blumenfeld, Ayushi
+Agrawal, Michela Traglia, Brian Grone, Misha Zilberter, Oscar Yip et
+al. “Neuronal APOE4 removal protects against tau-mediated gliosis,
+neurodegeneration and myelin deficits.” Nature aging 3, no. 3 (2023):
+275-296. <https://doi.org/10.1038/s43587-023-00368-3>\]
 
 ## AI Disclosure Statement
 
