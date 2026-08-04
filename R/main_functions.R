@@ -127,10 +127,17 @@ estimate_variance_w_args <- function(pars, counts, total_cells, optim_clusters, 
   }
   pars <- pars / exp(mean(log(pars)))
   for (s in 1:ncol(counts)) {
-    if (sum(pars[s] * total_cells[s] - counts[, s] < 0) > 0) {
+    denom <- pars[s] * total_cells[s] - counts[, s]
+    if (any(denom <= 0)) {
       warning("non-feasible solution for sample ", s)
+      return(.Machine$double.xmax)  # steer optimizer away before NaN is produced
     }
-    log_odds[, s] <- log((counts[, s] + 1) / (pars[s] * total_cells[s] - counts[, s]))
+    log_odds[, s] <- log((counts[, s] + 1) / denom)
+    
+    # if (sum(pars[s] * total_cells[s] - counts[, s] < 0) > 0) {
+    #   warning("non-feasible solution for sample ", s)
+    # }
+    # log_odds[, s] <- log((counts[, s] + 1) / (pars[s] * total_cells[s] - counts[, s]))
   }
   for (c in optim_clusters) {
     temp_var_estimate <- (1 / (nsamp - 1)) * t(log_odds[c, ]) %*% centering_matrix %*% ((log_odds[c, ]))
@@ -382,7 +389,7 @@ logodds_optimized_normFactors <- function(cellcomp_se, verbose = TRUE) {
         ineqfun = ineqfun,
         ineqLB = matrixStats::colMaxs(counts %>% as.matrix(.)),
         ineqUB = rep(2 * max(Total_Cells), nsamp),
-        control = list(tol = 1e-12, delta = 1e-9, trace = 0),
+        control = list(tol = 1e-12, delta = 1e-9, trace = 0, rho=2),
       )
 
       if (temp_res$convergence == 0) {
